@@ -10,3 +10,18 @@ def user_test():
         'name' : '전은형',
         'birth_year' : 1991,
     }
+    
+def login_test(id, pw):
+    # 아이디 : admin / 비번 : qwer 로그인 성공 응답
+    # 그 외 : 실패처리
+    
+    if id == 'admin' and pw == 'qwer':
+        return {
+            'code' : 200,
+            'message' : 'login ok',
+        } 
+    else :
+        return {
+            'code' : 400,
+            'message' : 'id or pw incorrect',
+        }
