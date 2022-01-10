@@ -69,6 +69,22 @@ def login_test(id, pw):
 # 2. 닉네임도 사용중이라면 400으로 에러처리
 # 둘 다 통과해야지 실제 INSERT INTO -> 결과를 200으로 내려주고, 가입된 사용자 정보도 내려줄꺼야
 def sign_up(params):   
+    
+    # 이메일(params['email']이 이미 사용중인지, 같은 이메일이 DB에 있는가 조회하기 => SELECT문
+    sql = f"SELECT * FROM users WHERE email = '{params['email']}'"
+    
+    cursor.execute(sql)
+    email_check_result = cursor.fetchone()
+    
+    # ecr가 None이라면 사용가능한 이메일
+    # ecr가 None이 아니라면 사용불가
+    if email_check_result:
+        return{
+            'code' : 400,
+            'message' : '이미 사용중인 이메일입니다.'
+        }, 400
+    
+    
     sql = f"INSERT INTO users (email, password, nickname) VALUES ('{params['email']}', '{params['pw']}', '{params['nick']}');"
     
     print(f'완성된 쿼리 : {sql}')
