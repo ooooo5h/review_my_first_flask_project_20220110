@@ -29,39 +29,76 @@ def user_test():
  
 # 로그인 테스트 기능   
 def login_test(id, pw):
-    # id, pw를 이용해서  -> SQL 쿼리 작성 -> 결과에 따라 다른 응답 리턴 
     
-    sql = f"SELECT * FROM users WHERE email='{id}' AND password='{pw}'"
+    sql = f"SELECT * FROM users WHERE email = '{id}'"
+    
     cursor.execute(sql)
+    id_check_result = cursor.fetchone()
     
-    query_result = cursor.fetchone()  # 검색결과 없으면, None 리턴. 검색결과 있으면, 사용자의 정보를 담은 dict 리턴
-    
-    # 쿼리 결과가 None이다 > 아이디 비번 맞는 사람이 없다 > 로그인 실패
-    if query_result == None :
-        return{
+    if id_check_result is None:
+        return {
             'code' : 400,
-            'message' : '아이디 또는 비밀번호가 잘못되었습니다.'
+            'message' : '존재하지 않는 이메일입니다.'
         }, 400
     else :
-        # 검색 결과가 있다 > 아이디/비밀번호 모두 맞는 사람이 있다 > 로그인 성공
-        # query_result의 실체가 있다 > None이 아니다 => 앱에서 사용 가능한 JSONObject로 보내보자
         
-        print(query_result)
+        sql = f"SELECT * FROM users WHERE password = '{pw}'"
         
-        user_dict = {
-            'id' : query_result['id'],
-            'email' : query_result['email'],
-            'nickname' : query_result['nickname'],
-        }
+        cursor.execute(sql)
+        pw_check_result = cursor.fetchone()
+        
+        if pw_check_result :
+            return {
+                'code' : 200,
+                'message': '로그인 성공',
+                'data' : {
+                    'user' : {
+                        'id' : pw_check_result['id'],
+                        'email' : pw_check_result['email'],
+                        'nickname' : pw_check_result['nickname'],
+                    }
+                }   
+            }, 200
+        else:
+            return{
+                'code' : 400,
+                'message' : '비밀번호가 틀렸습니다.'
+            }, 400
+    
+    
+    # # id, pw를 이용해서  -> SQL 쿼리 작성 -> 결과에 따라 다른 응답 리턴 
+    
+    # sql = f"SELECT * FROM users WHERE email='{id}' AND password='{pw}'"
+    # cursor.execute(sql)
+    
+    # query_result = cursor.fetchone()  # 검색결과 없으면, None 리턴. 검색결과 있으면, 사용자의 정보를 담은 dict 리턴
+    
+    # # 쿼리 결과가 None이다 > 아이디 비번 맞는 사람이 없다 > 로그인 실패
+    # if query_result == None :
+    #     return{
+    #         'code' : 400,
+    #         'message' : '아이디 또는 비밀번호가 잘못되었습니다.'
+    #     }, 400
+    # else :
+    #     # 검색 결과가 있다 > 아이디/비밀번호 모두 맞는 사람이 있다 > 로그인 성공
+    #     # query_result의 실체가 있다 > None이 아니다 => 앱에서 사용 가능한 JSONObject로 보내보자
+        
+    #     print(query_result)
+        
+    #     user_dict = {
+    #         'id' : query_result['id'],
+    #         'email' : query_result['email'],
+    #         'nickname' : query_result['nickname'],
+    #     }
         
         
-        return{
-            'code' : 200,
-            'message' : '로그인 성공',
-            'data' : {
-                'user' : user_dict,
-            }
-        }
+    #     return{
+    #         'code' : 200,
+    #         'message' : '로그인 성공',
+    #         'data' : {
+    #             'user' : user_dict,
+    #         }
+    #     }
     
  
 # 회원가입 기능
