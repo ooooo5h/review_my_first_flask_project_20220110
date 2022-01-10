@@ -1,6 +1,8 @@
 from flask import Flask, jsonify
 from flask.templating import render_template
 
+from .api import user_test
+
 def create_app():
     # 플라스크 서버를 변수에 담자
     app = Flask(__name__)
@@ -50,7 +52,12 @@ def create_app():
             'code' : 200,
             'message' : 'json test ok',
             'data' : user_dict,
-        }    
+        }   
+        
+    @app.route('/module_test')
+    def module_test():
+        return user_test() 
+    
     
     # 이 서버를 사용하도록 결과로 내보내기
     return app
