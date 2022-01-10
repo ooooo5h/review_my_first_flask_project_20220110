@@ -19,9 +19,9 @@ def login_test(id, pw):
         return {
             'code' : 200,
             'message' : 'login ok',
-        } 
+        }, 200 
     else :
         return {
             'code' : 400,
             'message' : 'id or pw incorrect',
-        }
+        }, 400
