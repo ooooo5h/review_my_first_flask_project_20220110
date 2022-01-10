@@ -104,6 +104,19 @@ def sign_up(params):
     cursor.execute(sql)
     db.commit()
     
+    # 제일 마지막에 가입한 1명만 뽑아주세요
+    sign_up_user_sql = f"SELECT * FROM users ORDER BY id DESC LIMIT 1"
+    cursor.execute(sign_up_user_sql)
+    sign_up_user = cursor.fetchone()
+    
     return {
-        'test' : '테스트'
+        'code' : 200,
+        'message' : '회원가입 성공',
+        'data' : {
+            'user' : {
+                'id' : sign_up_user['id'],
+                'email' : sign_up_user['email'],
+                'nickname' : sign_up_user['nickname'],
+            }
+        }
     }
