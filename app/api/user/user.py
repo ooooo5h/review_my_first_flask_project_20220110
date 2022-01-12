@@ -40,30 +40,32 @@ def login_test(id, pw):
             'code' : 400,
             'message' : '존재하지 않는 이메일입니다.'
         }, 400
-    else :
+ 
+    sql = f"SELECT * FROM users WHERE email = '{id}' AND password = '{pw}'"
+    
+    cursor.execute(sql)
+    pw_check_result = cursor.fetchone()
+    
+    if pw_check_result is None :
+        return {
+            'code' : 400,
+            'message': '비밀번호 땡',
+        }, 400
+    else:
         
-        sql = f"SELECT * FROM users WHERE password = '{pw}'"
+        user_dict = {
+            'id' : pw_check_result['id'],
+            'email' : pw_check_result['email'],
+            'nickname' : pw_check_result['nickname'],  
+        }
         
-        cursor.execute(sql)
-        pw_check_result = cursor.fetchone()
-        
-        if pw_check_result :
-            return {
-                'code' : 200,
-                'message': '로그인 성공',
-                'data' : {
-                    'user' : {
-                        'id' : pw_check_result['id'],
-                        'email' : pw_check_result['email'],
-                        'nickname' : pw_check_result['nickname'],
-                    }
-                }   
-            }, 200
-        else:
-            return{
-                'code' : 400,
-                'message' : '비밀번호가 틀렸습니다.'
-            }, 400
+        return{
+            'code' : 200,
+            'message' : '로그인 성공',
+            'user' : {
+                'user' : user_dict,
+            }
+        }
     
     
     # # id, pw를 이용해서  -> SQL 쿼리 작성 -> 결과에 따라 다른 응답 리턴 
