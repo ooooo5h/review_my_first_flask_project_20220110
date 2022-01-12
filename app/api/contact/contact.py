@@ -18,6 +18,18 @@ cursor = db.cursor()
 
 def add_contact_to_db(params):
     
+    # 사전검사 추가 : user_id 파라미터의 값이 실제 사용자 id가 맞는지?
+    sql = f"SELECT * FROM users WHERE id = {params['user_id']}"
+    
+    cursor.execute(sql)
+    user_result = cursor.fetchone()
+    
+    if user_result == None:
+        return{
+            'code' : 400,
+            'message' : '해당 사용자 id 없음'
+        }, 400
+    
     sql = f"INSERT INTO contacts (user_id, name, phone_num, memo) VALUES ({params['user_id']}, '{params['name']}', '{params['phone']}', '{params['memo']}'"
     
     print('SQL : ', sql)
